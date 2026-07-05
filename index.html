@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0f0a1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AnimeFX" />
+    <meta name="description" content="Real-time cel-shaded anime camera effect for Instagram Stories and Reels" />
+    <title>Anime Filter — Real-Time Camera Effect</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="assets/icon-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/icon-192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">✦</span>
+          <div>
+            <h1>Anime Filter</h1>
+            <p class="tagline">Cel-shaded camera effect for Stories &amp; Reels</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="install-app" class="btn btn-ghost" type="button" hidden>Install app</button>
+          <button id="flip-camera" class="btn btn-ghost" type="button" title="Flip camera">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7h6l2-3h2l2 3h6v10H3V7z" />
+              <circle cx="12" cy="13" r="3" />
+            </svg>
+            Flip
+          </button>
+        </div>
+      </header>
+
+      <main class="stage">
+        <div class="viewport" id="viewport">
+          <video id="video" playsinline muted autoplay></video>
+          <canvas id="canvas"></canvas>
+          <div class="record-badge" id="record-badge" hidden>REC 0:00</div>
+          <div class="compare-handle" id="compare-handle" hidden>
+            <div class="compare-line"></div>
+            <div class="compare-knob">⇔</div>
+          </div>
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Starting camera…</p>
+          </div>
+          <div class="error" id="error" hidden>
+            <p id="error-message">Camera access denied.</p>
+            <button id="retry-camera" class="btn btn-primary" type="button">Try again</button>
+          </div>
+        </div>
+
+        <div class="capture-bar">
+          <button id="toggle-compare" class="btn btn-ghost" type="button">Compare</button>
+          <button id="capture" class="shutter" type="button" aria-label="Capture photo">
+            <span class="shutter-ring"></span>
+          </button>
+          <button id="download" class="btn btn-ghost" type="button" disabled>Save</button>
+        </div>
+
+        <div class="media-bar">
+          <button id="toggle-record" class="btn btn-record" type="button">Record</button>
+          <button id="download-video" class="btn btn-ghost" type="button" disabled>Save video</button>
+        </div>
+      </main>
+
+      <aside class="controls">
+        <section class="control-group">
+          <h2>Effect</h2>
+
+          <label class="slider-row">
+            <span>Outline strength</span>
+            <input type="range" id="edge-strength" min="0" max="2" step="0.05" value="1.1" />
+            <output id="edge-strength-val">1.1</output>
+          </label>
+
+          <label class="slider-row">
+            <span>Color levels</span>
+            <input type="range" id="color-levels" min="4" max="24" step="1" value="10" />
+            <output id="color-levels-val">10</output>
+          </label>
+
+          <label class="slider-row">
+            <span>Smoothing</span>
+            <input type="range" id="smoothness" min="0" max="1" step="0.05" value="0.65" />
+            <output id="smoothness-val">0.65</output>
+          </label>
+
+          <label class="slider-row">
+            <span>Saturation</span>
+            <input type="range" id="saturation" min="0" max="2" step="0.05" value="1.35" />
+            <output id="saturation-val">1.35</output>
+          </label>
+
+          <label class="slider-row">
+            <span>Warmth</span>
+            <input type="range" id="warmth" min="0" max="1" step="0.05" value="0.25" />
+            <output id="warmth-val">0.25</output>
+          </label>
+
+          <label class="slider-row">
+            <span>Contrast</span>
+            <input type="range" id="contrast" min="0.5" max="2" step="0.05" value="1" />
+            <output id="contrast-val">1.00</output>
+          </label>
+        </section>
+
+        <section class="control-group presets">
+          <h2>Presets</h2>
+          <div class="preset-grid">
+            <button class="preset active" type="button" data-preset="classic">Classic</button>
+            <button class="preset" type="button" data-preset="ghibli">Soft</button>
+            <button class="preset" type="button" data-preset="shonen">Bold</button>
+            <button class="preset" type="button" data-preset="pastel">Pastel</button>
+            <button class="preset" type="button" data-preset="manga">Manga</button>
+            <button class="preset" type="button" data-preset="cyber">Cyber</button>
+            <button class="preset" type="button" data-preset="noir">Noir</button>
+            <button class="preset" type="button" data-preset="watercolor">Watercolor</button>
+          </div>
+        </section>
+
+        <section class="control-group info">
+          <h2>Share on Instagram</h2>
+          <p>
+            <strong>Photo:</strong> shutter → Save → upload to Story or Post.<br />
+            <strong>Reels:</strong> Record → Save video → upload to Reels.<br />
+            <strong>Mobile:</strong> tap Install app for one-tap access from your home screen.
+          </p>
+        </section>
+      </aside>
+    </div>
+
+    <div class="ios-guide" id="ios-install-guide" hidden>
+      <div class="ios-guide-card">
+        <h3>Add to Home Screen</h3>
+        <ol>
+          <li>Tap the <strong>Share</strong> button in Safari</li>
+          <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
+          <li>Open AnimeFX from your home screen for full-screen camera access</li>
+        </ol>
+        <button id="dismiss-ios-guide" class="btn btn-primary" type="button">Got it</button>
+      </div>
+    </div>
+
+    <canvas id="capture-canvas" hidden></canvas>
+
+    <script src="js/shaders.js"></script>
+    <script src="js/anime-filter.js"></script>
+    <script src="js/recorder.js"></script>
+    <script src="js/pwa.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
