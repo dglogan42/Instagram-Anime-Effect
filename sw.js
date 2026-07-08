@@ -1,29 +1,19 @@
-const CACHE = "anime-filter-v2";
-
-function basePath() {
-  const path = self.location.pathname;
-  return path.endsWith("sw.js") ? path.slice(0, -"sw.js".length) : path;
-}
-
+/* Multi-platform PWA service worker */
+const CACHE = 'pwa-instagram-anime-effect-v1';
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/styles.css",
-  "./js/shaders.js",
-  "./js/anime-filter.js",
-  "./js/recorder.js",
-  "./js/pwa.js",
-  "./js/main.js",
-  "./manifest.json",
-  "./assets/icon-192.png",
-  "./assets/icon-512.png",
+  "./manifest.webmanifest",
+  "./icons/icon-180.png",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-512.png",
+
 ];
 
 self.addEventListener("install", (event) => {
-  const root = basePath();
-  const urls = ASSETS.map((asset) => root + asset.replace(/^\.\//, ""));
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(urls)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((cache) => cache.addAll(ASSETS.filter(Boolean))).then(() => self.skipWaiting())
   );
 });
 
@@ -36,23 +26,24 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-
+  const { request } = event;
+  if (request.method !== "GET") return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) {
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
+    return;
+  }
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const network = fetch(event.request)
+    caches.match(request).then((cached) => {
+      const network = fetch(request)
         .then((response) => {
-          if (response.ok) {
+          if (response && response.status === 200) {
             const clone = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(event.request, clone));
+            caches.open(CACHE).then((cache) => cache.put(request, clone));
           }
           return response;
         })
         .catch(() => cached);
-
       return cached || network;
     })
   );

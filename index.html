@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#0f0a1a" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -19,6 +19,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/styles.css" />
+      <link rel="stylesheet" href="pwa-install.css" />
   </head>
   <body>
     <div class="app">
@@ -160,5 +161,18 @@
     <script src="js/recorder.js"></script>
     <script src="js/pwa.js"></script>
     <script src="js/main.js"></script>
+  
+    <div class="install-prompt" id="installPrompt" hidden role="dialog" aria-label="Install app">
+      <div class="install-prompt__body">
+        <strong>Install this app</strong>
+        <p data-install-text>Add to your home screen for offline use on any device.</p>
+      </div>
+      <div class="install-prompt__actions">
+        <button type="button" data-install hidden>Install</button>
+        <button type="button" data-dismiss>Not now</button>
+      </div>
+    </div>
+
+      <script type="module" src="install.js"></script>
   </body>
 </html>

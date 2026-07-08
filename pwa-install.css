@@ -1,0 +1,34 @@
+
+/* Multi-platform PWA install banner */
+.install-prompt {
+  position: fixed;
+  z-index: 9999;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 12px 40px rgba(0,0,0,.3);
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+.install-prompt[hidden] { display: none !important; }
+.install-prompt__body { flex: 1 1 200px; }
+.install-prompt__body strong { display: block; margin-bottom: 4px; }
+.install-prompt__body p { margin: 0; color: #555; font-size: 0.85rem; line-height: 1.4; }
+.install-prompt__actions { display: flex; gap: 8px; }
+.install-prompt button {
+  border: none; border-radius: 10px; padding: 10px 14px;
+  font-weight: 700; cursor: pointer; font-size: 0.8rem;
+}
+.install-prompt [data-install] { background: #111; color: #fff; }
+.install-prompt [data-dismiss] { background: #eee; color: #333; }
